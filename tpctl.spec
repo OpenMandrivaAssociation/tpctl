@@ -17,7 +17,8 @@ Source4:	ultrabay.suspend.bz2
 Patch0:		hdparm-5.4-fix_path_bell_idectl.patch
 BuildRequires:	ncurses-devel
 Requires:	%{libname} = %{version}-%{release}
-Prereq:		rpm-helper
+#Requires(post): rpm-helper
+#Requires(preun): rpm-helper
 # 4.4-2mdk (Abel) idectl and ultrabayd is moved to this package
 Requires:	hdparm >= 5.4-3mdk
 Conflicts:	hdparm <= 5.4-2mdk
@@ -120,5 +121,3 @@ rm -rf %{buildroot}
 %doc ChangeLog COPYING 
 %{_libdir}/*.so
 %{_includedir}/*
-
-
