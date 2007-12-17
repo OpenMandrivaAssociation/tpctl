@@ -22,7 +22,6 @@ Requires:	%{libname} = %{version}-%{release}
 # 4.4-2mdk (Abel) idectl and ultrabayd is moved to this package
 Requires:	hdparm >= 5.4-3mdk
 Conflicts:	hdparm <= 5.4-2mdk
-BuildRoot:	%{_tmppath}/%{name}-%{version}-root
 
 %description
 Utilities specific to IBM Thinkpads
