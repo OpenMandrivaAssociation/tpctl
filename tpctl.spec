@@ -4,7 +4,7 @@
 Summary:	Thinkpad Utilities
 Name:		tpctl
 Version:	4.17
-Release:	%mkrel 4
+Release:	%mkrel 5
 URL:		http://tpctl.sourceforge.net/
 Group:		System/Kernel and hardware
 License:	GPL
