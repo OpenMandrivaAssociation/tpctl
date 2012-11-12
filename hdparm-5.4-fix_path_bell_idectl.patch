@@ -1,0 +1,21 @@
+diff -ruN hdparm-5.4/contrib.orig/ultrabayd hdparm-5.4/contrib/ultrabayd
+--- hdparm-5.4/contrib.orig/ultrabayd	2003-07-08 14:15:01.000000000 +0200
++++ hdparm-5.4/contrib/ultrabayd	2003-07-08 14:19:34.000000000 +0200
+@@ -3,7 +3,7 @@
+ VERSION="0.1.000"
+ 
+ TPCTL="/usr/bin/tpctl"
+-IDECTL="/sbin/idectl"
++IDECTL="/usr/sbin/idectl"
+ 
+ INTERVAL=5
+ 
+@@ -41,7 +41,7 @@
+ 		END
+ 
+ 		if [ "$d_type" != "$o_d_type" ] || [ "$d_id" != "$o_d_id" ]; then
+-			echo -n "\07" > /dev/tty1
++			echo -n -e "\a" > /dev/tty1
+ 
+ 			o_d_type="$d_type"
+ 			o_d_id="$d_id"
