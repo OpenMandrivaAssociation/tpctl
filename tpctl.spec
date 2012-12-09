@@ -4,7 +4,7 @@
 Summary:	Thinkpad Utilities
 Name:		tpctl
 Version:	4.17
-Release:	%mkrel 9
+Release:	%mkrel 11
 URL:		http://tpctl.sourceforge.net/
 Group:		System/Kernel and hardware
 License:	GPL
@@ -125,3 +125,71 @@ rm -rf %{buildroot}
 %doc ChangeLog COPYING 
 %{_libdir}/*.so
 %{_includedir}/*
+
+
+%changelog
+* Fri May 06 2011 Oden Eriksson <oeriksson@mandriva.com> 4.17-9mdv2011.0
++ Revision: 670725
+- mass rebuild
+
+* Fri Dec 03 2010 Oden Eriksson <oeriksson@mandriva.com> 4.17-8mdv2011.0
++ Revision: 608039
+- rebuild
+
+* Wed Mar 17 2010 Oden Eriksson <oeriksson@mandriva.com> 4.17-7mdv2010.1
++ Revision: 524234
+- rebuilt for 2010.1
+
+* Thu Sep 03 2009 Christophe Fergeau <cfergeau@mandriva.com> 4.17-6mdv2010.0
++ Revision: 427429
+- rebuild
+
+* Sat Mar 07 2009 Antoine Ginies <aginies@mandriva.com> 4.17-5mdv2009.1
++ Revision: 351467
+- rebuild
+
+* Wed Jun 18 2008 Thierry Vignaud <tv@mandriva.org> 4.17-4mdv2009.0
++ Revision: 225847
+- rebuild
+
+  + Pixel <pixel@mandriva.com>
+    - do not call ldconfig in %%post/%%postun, it is now handled by filetriggers
+
+* Wed Mar 05 2008 Oden Eriksson <oeriksson@mandriva.com> 4.17-3mdv2008.1
++ Revision: 179660
+- rebuild
+
+  + Olivier Blin <oblin@mandriva.com>
+    - restore BuildRoot
+
+  + Thierry Vignaud <tv@mandriva.org>
+    - kill re-definition of %%buildroot on Pixel's request
+
+* Wed Aug 29 2007 Oden Eriksson <oeriksson@mandriva.com> 4.17-2mdv2008.0
++ Revision: 74249
+- fix prereq-use (though it's deactivated)
+
+
+* Fri Mar 16 2007 Oden Eriksson <oeriksson@mandriva.com> 4.17-2mdv2007.1
++ Revision: 145249
+- Import tpctl
+
+* Fri Mar 16 2007 Oden Eriksson <oeriksson@mandriva.com> 4.17-2mdv2007.1
+- use the %%mrel macro
+- bunzip patches
+
+* Mon Apr 25 2005 Abel Cheung <deaddog@mandriva.org> 4.17-1mdk
+- From Emmanuel Andry <eandry@free.fr>:
+  o 4.17
+- Src4: (un)register IDE interface when ThinkPad is (un)docked
+  after recover
+- Fix apmiser initscript to quit if APM is not used
+- Don't register apmiser and ultrabayd as service, they are
+  probably useless unless APM is used?
+
+* Wed Aug 25 2004 Erwan Vely <erwan@mandrakesoft.com> 4.14-1mdk
+- 4.14
+- Cleaning spec
+- Removing patch0 no more necessary
+- Moving patch1 as patch0
+
