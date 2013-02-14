@@ -1,28 +1,25 @@
-%define lib_major 2
-%define libname %mklibname %{name} %{lib_major}
+%define major	2
+%define libname %mklibname %{name} %{major}
+%define devname %mklibname %{name} -d
 
 Summary:	Thinkpad Utilities
 Name:		tpctl
 Version:	4.17
-Release:	%mkrel 11
+Release:	12
 URL:		http://tpctl.sourceforge.net/
 Group:		System/Kernel and hardware
-License:	GPL
-ExclusiveArch:	%{ix86}
-Source:		http://prdownloads.sourceforge.net/tpctl/%{name}_%{version}.tar.gz
+License:	GPLv2
+Source0:	http://prdownloads.sourceforge.net/tpctl/%{name}_%{version}.tar.gz
 Source1:	apmiser.init.bz2
 Source2:	hdparm-contrib-ultrabayd.tar.bz2
 Source3:	ultrabayd.init.bz2
 Source4:	ultrabay.suspend.bz2
 Patch0:		hdparm-5.4-fix_path_bell_idectl.patch
-BuildRequires:	ncurses-devel
-Requires:	%{libname} = %{version}-%{release}
-#Requires(post): rpm-helper
-#Requires(preun): rpm-helper
-# 4.4-2mdk (Abel) idectl and ultrabayd is moved to this package
-Requires:	hdparm >= 5.4-3mdk
-Conflicts:	hdparm <= 5.4-2mdk
-BuildRoot:	%{_tmppath}/%{name}-%{version}-root
+Patch1:		tpctl-4.17_ncurses.patch
+ExclusiveArch:	%{ix86}
+
+BuildRequires:	pkgconfig(ncurses)
+Requires:	hdparm
 
 %description
 Utilities specific to IBM Thinkpads
@@ -34,33 +31,30 @@ Group:		System/Libraries
 %description -n	%{libname}
 This library is mandatory for tpctl utilities.
  
-%package -n	%{libname}-devel
+%package -n	%{devname}
 Summary:	Development package with static libs and headers
 Group:		Development/C
 Requires:	%{libname} = %{version}-%{release}
-Provides:	lib%{name}-devel = %{version}-%{release}
 Provides:	%{name}-devel = %{version}-%{release} 
+Obsoletes:	%{_lib}tpctl2-devel < 4.17-12
 
-%description -n	%{libname}-devel
+%description -n	%{devname}
 This package contains header files and static library for tpctl
 utilities.
  
 %prep
-
 %setup -q -a 2
 # 4.4-2mdk (Abel) needs Source2
-%patch0 -p1 -b .ultrabay
+%apply_patches
 mv contrib/README contrib/idectl-README
 
 # stupid makefile
 perl -pi -e "s|-o 0 -g 0||g" Makefile
 
 %build
-make CFLAGS="%{optflags}" all
+%make
 
 %install
-rm -rf %{buildroot}
-
 mkdir -p %{buildroot}/{%{_sbindir},%{_mandir}/man1}
 make install DEST=%{buildroot}
 
@@ -86,27 +80,7 @@ mkdir -p %{buildroot}%{_sysconfdir}/sysconfig/suspend-scripts/suspend.d/
 bzcat %{SOURCE4} > %{buildroot}%{_sysconfdir}/sysconfig/suspend-scripts/suspend.d/ultrabay
 chmod 755 %{buildroot}%{_sysconfdir}/sysconfig/suspend-scripts/suspend.d/ultrabay
 
-%clean
-rm -rf %{buildroot}
-
-#post 
-#_post_service apmiser
-#_post_service ultrabayd
-
-#preun 
-#_preun_service apmiser
-#_preun_service ultrabayd
-
-%if %mdkversion < 200900
-%post -n %{libname} -p /sbin/ldconfig
-%endif
-
-%if %mdkversion < 200900
-%postun -n %{libname} -p /sbin/ldconfig
-%endif
-
 %files
-%defattr(-,root,root)
 %doc AUTHORS COPYING README SUPPORTED-MODELS TROUBLESHOOTING VGA-MODES
 %doc contrib/idectl-README
 %config(noreplace) %{_sysconfdir}/sysconfig/suspend-scripts/suspend.d/*
@@ -116,80 +90,9 @@ rm -rf %{buildroot}
 %{_mandir}/man?/*
 
 %files -n %{libname}
-%defattr(-,root,root)
-%doc COPYING
-%{_libdir}/*.so.*
+%{_libdir}/*.so.%{major}*
 
-%files -n %{libname}-devel
-%defattr(-,root,root)
-%doc ChangeLog COPYING 
+%files -n %{devname}
 %{_libdir}/*.so
 %{_includedir}/*
-
-
-%changelog
-* Fri May 06 2011 Oden Eriksson <oeriksson@mandriva.com> 4.17-9mdv2011.0
-+ Revision: 670725
-- mass rebuild
-
-* Fri Dec 03 2010 Oden Eriksson <oeriksson@mandriva.com> 4.17-8mdv2011.0
-+ Revision: 608039
-- rebuild
-
-* Wed Mar 17 2010 Oden Eriksson <oeriksson@mandriva.com> 4.17-7mdv2010.1
-+ Revision: 524234
-- rebuilt for 2010.1
-
-* Thu Sep 03 2009 Christophe Fergeau <cfergeau@mandriva.com> 4.17-6mdv2010.0
-+ Revision: 427429
-- rebuild
-
-* Sat Mar 07 2009 Antoine Ginies <aginies@mandriva.com> 4.17-5mdv2009.1
-+ Revision: 351467
-- rebuild
-
-* Wed Jun 18 2008 Thierry Vignaud <tv@mandriva.org> 4.17-4mdv2009.0
-+ Revision: 225847
-- rebuild
-
-  + Pixel <pixel@mandriva.com>
-    - do not call ldconfig in %%post/%%postun, it is now handled by filetriggers
-
-* Wed Mar 05 2008 Oden Eriksson <oeriksson@mandriva.com> 4.17-3mdv2008.1
-+ Revision: 179660
-- rebuild
-
-  + Olivier Blin <oblin@mandriva.com>
-    - restore BuildRoot
-
-  + Thierry Vignaud <tv@mandriva.org>
-    - kill re-definition of %%buildroot on Pixel's request
-
-* Wed Aug 29 2007 Oden Eriksson <oeriksson@mandriva.com> 4.17-2mdv2008.0
-+ Revision: 74249
-- fix prereq-use (though it's deactivated)
-
-
-* Fri Mar 16 2007 Oden Eriksson <oeriksson@mandriva.com> 4.17-2mdv2007.1
-+ Revision: 145249
-- Import tpctl
-
-* Fri Mar 16 2007 Oden Eriksson <oeriksson@mandriva.com> 4.17-2mdv2007.1
-- use the %%mrel macro
-- bunzip patches
-
-* Mon Apr 25 2005 Abel Cheung <deaddog@mandriva.org> 4.17-1mdk
-- From Emmanuel Andry <eandry@free.fr>:
-  o 4.17
-- Src4: (un)register IDE interface when ThinkPad is (un)docked
-  after recover
-- Fix apmiser initscript to quit if APM is not used
-- Don't register apmiser and ultrabayd as service, they are
-  probably useless unless APM is used?
-
-* Wed Aug 25 2004 Erwan Vely <erwan@mandrakesoft.com> 4.14-1mdk
-- 4.14
-- Cleaning spec
-- Removing patch0 no more necessary
-- Moving patch1 as patch0
 

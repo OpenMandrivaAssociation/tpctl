@@ -1,0 +1,11 @@
+--- tpctl-4.17/ntpctl/Makefile~	2003-10-15 18:07:03.000000000 +0000
++++ tpctl-4.17/ntpctl/Makefile	2013-02-14 03:08:40.899659265 +0000
+@@ -6,7 +6,7 @@
+ ALLCFLAGS:=$(CFLAGS) -L../lib -I../include -DLINUX
+ 
+ ntpctl: ntpctl.o event_cond.o pointing_device.o timer.o ../lib/libsmapidev.so.2
+-	$(CC) $(ALLCFLAGS) -o $@ ntpctl.o event_cond.o pointing_device.o timer.o -lmenu -lncurses -lsmapidev
++	$(CC) $(ALLCFLAGS) -o $@ ntpctl.o event_cond.o pointing_device.o timer.o -lmenuw -lncurses -lsmapidev
+ 
+ event_cond.o: event_cond.c ntpctl.h ../include/thinkpad_common.h ../include/smapi.h
+ 	$(CC) $(ALLCFLAGS) -o $@ -c event_cond.c
