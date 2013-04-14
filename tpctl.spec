@@ -5,7 +5,7 @@
 Summary:	Thinkpad Utilities
 Name:		tpctl
 Version:	4.17
-Release:	12
+Release:	13
 URL:		http://tpctl.sourceforge.net/
 Group:		System/Kernel and hardware
 License:	GPLv2
@@ -16,7 +16,7 @@ Source3:	ultrabayd.init.bz2
 Source4:	ultrabay.suspend.bz2
 Patch0:		hdparm-5.4-fix_path_bell_idectl.patch
 Patch1:		tpctl-4.17_ncurses.patch
-ExclusiveArch:	%{ix86}
+ExclusiveArch:	%{ix86} x86_64
 
 BuildRequires:	pkgconfig(ncurses)
 Requires:	hdparm
@@ -52,11 +52,11 @@ mv contrib/README contrib/idectl-README
 perl -pi -e "s|-o 0 -g 0||g" Makefile
 
 %build
-%make
+%make PATH_LIB=%_libdir/
 
 %install
 mkdir -p %{buildroot}/{%{_sbindir},%{_mandir}/man1}
-make install DEST=%{buildroot}
+make install DEST=%{buildroot} PATH_LIB=%_libdir/
 
 cd %{buildroot}/%{_libdir}/
 ln -sf libsmapidev.so.2.0 libsmapidev.so 
