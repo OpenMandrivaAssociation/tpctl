@@ -1,14 +1,14 @@
-%define major	2
-%define libname %mklibname %{name} %{major}
-%define devname %mklibname %{name} -d
+%define major 2
+%define libname %mklibname smapidev %{major}
+%define devname %mklibname smapidev -d
 
 Summary:	Thinkpad Utilities
 Name:		tpctl
 Version:	4.17
-Release:	17
-URL:		http://tpctl.sourceforge.net/
+Release:	19
 Group:		System/Kernel and hardware
-License:	GPLv2
+License:	GPLv2+
+Url:		http://tpctl.sourceforge.net/
 Source0:	http://prdownloads.sourceforge.net/tpctl/%{name}_%{version}.tar.gz
 Source1:	apmiser.init.bz2
 Source2:	hdparm-contrib-ultrabayd.tar.bz2
@@ -16,32 +16,58 @@ Source3:	ultrabayd.init.bz2
 Source4:	ultrabay.suspend.bz2
 Patch0:		hdparm-5.4-fix_path_bell_idectl.patch
 Patch1:		tpctl-4.17_ncurses.patch
+BuildRequires:	pkgconfig(ncurses)
+BuildRequires:	pkgconfig(ncursesw)
+Requires:	hdparm
 ExclusiveArch:	%{ix86} x86_64
 
-BuildRequires:	pkgconfig(ncurses)
-Requires:	hdparm
-
 %description
-Utilities specific to IBM Thinkpads
+Utilities specific to IBM Thinkpads.
+
+%files
+%doc AUTHORS COPYING README SUPPORTED-MODELS TROUBLESHOOTING VGA-MODES
+%doc contrib/idectl-README
+%config(noreplace) %{_sysconfdir}/sysconfig/suspend-scripts/suspend.d/*
+%{_initrddir}/*
+%{_sbindir}/*
+%{_bindir}/*
+%{_mandir}/man?/*
+
+#----------------------------------------------------------------------------
 
 %package -n %{libname}
 Summary:	Library associated with tpctl, needed for tpctl utilities
 Group:		System/Libraries
+Conflicts:	%{_lib}tpctl2 < 4.17-19
+Obsoletes:	%{_lib}tpctl2 < 4.17-19
 
-%description -n	%{libname}
+%description -n %{libname}
 This library is mandatory for tpctl utilities.
- 
-%package -n	%{devname}
+
+%files -n %{libname}
+%{_libdir}/libsmapidev.so.%{major}*
+
+#----------------------------------------------------------------------------
+
+%package -n %{devname}
 Summary:	Development package with static libs and headers
 Group:		Development/C
-Requires:	%{libname} = %{version}-%{release}
-Provides:	%{name}-devel = %{version}-%{release} 
+Requires:	%{libname} = %{EVRD}
+Provides:	%{name}-devel = %{EVRD}
+Conflicts:	%{_lib}tpctl2-devel < 4.17-12
 Obsoletes:	%{_lib}tpctl2-devel < 4.17-12
+Obsoletes:	%{_lib}tpctl-devel < 4.17-19
 
-%description -n	%{devname}
+%description -n %{devname}
 This package contains header files and static library for tpctl
 utilities.
- 
+
+%files -n %{devname}
+%{_libdir}/libsmapidev.so
+%{_includedir}/*
+
+#----------------------------------------------------------------------------
+
 %prep
 %setup -q -a 2
 # 4.4-2mdk (Abel) needs Source2
@@ -52,14 +78,14 @@ mv contrib/README contrib/idectl-README
 perl -pi -e "s|-o 0 -g 0||g" Makefile
 
 %build
-%make PATH_LIB=%_libdir/
+%make PATH_LIB=%{_libdir}/
 
 %install
 mkdir -p %{buildroot}/{%{_sbindir},%{_mandir}/man1}
-make install DEST=%{buildroot} PATH_LIB=%_libdir/
+make install DEST=%{buildroot} PATH_LIB=%{_libdir}/
 
 cd %{buildroot}/%{_libdir}/
-ln -sf libsmapidev.so.2.0 libsmapidev.so 
+ln -sf libsmapidev.so.2.0 libsmapidev.so
 cd -
 mkdir -p %{buildroot}/%{_initrddir}
 bzcat %{SOURCE1} > %{buildroot}/%{_initrddir}/apmiser
@@ -79,20 +105,4 @@ chmod 755 %{buildroot}%{_initrddir}/ultrabayd
 mkdir -p %{buildroot}%{_sysconfdir}/sysconfig/suspend-scripts/suspend.d/
 bzcat %{SOURCE4} > %{buildroot}%{_sysconfdir}/sysconfig/suspend-scripts/suspend.d/ultrabay
 chmod 755 %{buildroot}%{_sysconfdir}/sysconfig/suspend-scripts/suspend.d/ultrabay
-
-%files
-%doc AUTHORS COPYING README SUPPORTED-MODELS TROUBLESHOOTING VGA-MODES
-%doc contrib/idectl-README
-%config(noreplace) %{_sysconfdir}/sysconfig/suspend-scripts/suspend.d/*
-%{_initrddir}/*
-%{_sbindir}/*
-%{_bindir}/*
-%{_mandir}/man?/*
-
-%files -n %{libname}
-%{_libdir}/*.so.%{major}*
-
-%files -n %{devname}
-%{_libdir}/*.so
-%{_includedir}/*
 
