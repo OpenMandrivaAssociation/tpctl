@@ -71,7 +71,7 @@ utilities.
 %prep
 %setup -q -a 2
 # 4.4-2mdk (Abel) needs Source2
-%apply_patches
+%autopatch -p1
 mv contrib/README contrib/idectl-README
 
 # stupid makefile
