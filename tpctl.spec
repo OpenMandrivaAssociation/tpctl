@@ -73,12 +73,12 @@ utilities.
 # 4.4-2mdk (Abel) needs Source2
 %autopatch -p1
 mv contrib/README contrib/idectl-README
-
+sed -i 's|ld -shared|ld -shared -L /usr/lib64 |' lib/Makefile
 # stupid makefile
 perl -pi -e "s|-o 0 -g 0||g" Makefile
 
 %build
-%make PATH_LIB=%{_libdir}/
+%make_build PATH_LIB=%{_libdir}/
 
 %install
 mkdir -p %{buildroot}/{%{_sbindir},%{_mandir}/man1}
