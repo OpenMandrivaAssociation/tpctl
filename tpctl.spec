@@ -8,7 +8,7 @@ Version:	4.17
 Release:	25
 Group:		System/Kernel and hardware
 License:	GPLv2+
-Url:		http://tpctl.sourceforge.net/
+Url:		https://tpctl.sourceforge.net/
 Source0:	http://prdownloads.sourceforge.net/tpctl/%{name}_%{version}.tar.gz
 Source1:	apmiser.init.bz2
 Source2:	hdparm-contrib-ultrabayd.tar.bz2
