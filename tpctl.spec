@@ -16,6 +16,7 @@ Source3:	ultrabayd.init.bz2
 Source4:	ultrabay.suspend.bz2
 Patch0:		hdparm-5.4-fix_path_bell_idectl.patch
 Patch1:		tpctl-4.17_ncurses.patch
+BuildRequires:	make
 BuildRequires:	pkgconfig(ncurses)
 BuildRequires:	pkgconfig(ncursesw)
 Requires:	hdparm
